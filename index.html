@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideal Me | AI Product Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Playfair+Display:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --bg-cream: #FAF9F7;
+            --bg-white: #FFFFFF;
+            --bg-soft-green: #F0F5F2;
+            --bg-warm: #F5EDE6;
+            --bg-peach: #FFF5F0;
+            --accent-sage: #8BA889;
+            --accent-terracotta: #C4A484;
+            --accent-rust: #B5651D;
+            --accent-clay: #A67B5B;
+            --accent-coral: #FF8A80;
+            --accent-lavender: #B39DDB;
+            --text-primary: #2D3436;
+            --text-secondary: #636E72;
+            --text-muted: #B2BEC3;
+            --border-light: #E8E6E3;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 15px 50px rgba(0, 0, 0, 0.08);
+            --shadow-cute: 0 8px 30px rgba(139, 168, 137, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Language Switcher */
+        .lang-switch {
+            position: fixed;
+            top: 5rem;
+            right: 5%;
+            z-index: 1002;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .lang-switch {
+                top: 4.5rem;
+            }
+        }
+
+        .lang-btn {
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            background: var(--accent-sage);
+            color: var(--bg-white);
+            border-color: var(--accent-sage);
+        }
+
+        /* Background */
+        .bg-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+            background-image: 
+                radial-gradient(ellipse at 20% 30%, rgba(139, 168, 137, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(196, 164, 132, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(245, 237, 230, 0.8) 0%, transparent 70%);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(250, 249, 247, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-sage);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-sage);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 750px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--accent-sage);
+            font-weight: 500;
+            margin-bottom: 2rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .hero h1 span {
+            font-style: italic;
+            color: var(--accent-sage);
+            font-weight: 500;
+        }
+
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.25rem;
+            background: var(--text-primary);
+            color: var(--bg-white);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.4s ease;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            background: #1a1a1a;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scroll-hint::after {
+            content: '';
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--accent-sage), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; height: 40px; }
+            50% { opacity: 0.8; height: 50px; }
+        }
+
+        /* Cute About Me Section */
+        .about-me {
+            background: linear-gradient(135deg, var(--bg-peach) 0%, var(--bg-white) 50%, var(--bg-soft-green) 100%);
+            padding: 5rem 5%;
+        }
+
+        .about-card-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about-main-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-cute);
+            border: 2px solid var(--accent-sage);
+        }
+
+        .about-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .about-photo {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            max-height: 350px;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+        }
+
+        .about-photo-small {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            max-height: 280px;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .about-content p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .about-content strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .about-highlight {
+            background: var(--bg-soft-green);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-top: 1.25rem;
+            border-left: 4px solid var(--accent-sage);
+        }
+
+        .about-highlight p {
+            margin: 0.4rem 0;
+            font-size: 0.85rem;
+        }
+
+        .about-side-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-cute);
+            border: 2px solid var(--accent-lavender);
+            height: fit-content;
+        }
+
+        .about-side-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .egg-icon {
+            font-size: 1.5rem;
+        }
+
+        .about-side-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--accent-lavender);
+        }
+
+        .about-side-content p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .birth-story {
+            font-style: italic;
+            color: var(--text-primary);
+        }
+
+        .yimianclaw-info {
+            background: var(--bg-cream);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 0.75rem 0;
+        }
+
+        .yimianclaw-info p {
+            font-size: 0.8rem;
+            margin: 0.3rem 0;
+        }
+
+        .excited {
+            color: var(--accent-sage) !important;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        @media (max-width: 800px) {
+            .about-card-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 7rem 5%;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 2.6rem);
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            background: var(--bg-soft-green);
+            padding: 6rem 5%;
+            text-align: center;
+        }
+
+        .quote {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-style: italic;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .quote-author {
+            color: var(--accent-sage);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Philosophy Section */
+        .philosophy {
+            background: var(--bg-warm);
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1000px) {
+            .philosophy-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .philosophy-card {
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 4px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid var(--border-light);
+        }
+
+        .philosophy-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .philosophy-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--accent-sage);
+            opacity: 0.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .philosophy-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .philosophy-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        /* Projects Section */
+        .projects {
+            background: var(--bg-cream);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: var(--bg-white);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid var(--border-light);
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .project-image {
+            height: 140px;
+            background: linear-gradient(135deg, var(--bg-soft-green) 0%, #E8EFE9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+        }
+
+        .project-content p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .project-tag {
+            padding: 0.25rem 0.65rem;
+            background: var(--bg-cream);
+            border-radius: 2px;
+            font-size: 0.7rem;
+            color: var(--accent-clay);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            background: var(--bg-white);
+        }
+
+        .content-intro {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .content-intro h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 0.6rem;
+        }
+
+        .content-intro p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .content-topics {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .topic-tag {
+            padding: 0.5rem 1rem;
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            border-radius: 2px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .topic-tag:hover {
+            background: var(--accent-sage);
+            color: var(--bg-white);
+            border-color: var(--accent-sage);
+        }
+
+        .featured-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .post-card {
+            background: var(--bg-cream);
+            border-radius: 4px;
+            padding: 1.25rem;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            border-color: var(--accent-sage);
+            transform: translateY(-2px);
+        }
+
+        .post-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .post-card p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        /* Skills */
+        .skills {
+            background: var(--bg-cream);
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: linear-gradient(135deg, var(--bg-soft-green), var(--bg-white));
+            border-radius: 20px;
+            border: 1px solid var(--accent-sage);
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .skill-item:hover {
+            background: var(--accent-sage);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 168, 137, 0.3);
+        }
+
+        /* Interests */
+        .interests {
+            background: var(--bg-warm);
+            padding: 4.5rem 5%;
+            text-align: center;
+        }
+
+        .interests h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .interests-flex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .interest-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--bg-white);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .interest-tag:hover {
+            background: var(--accent-terracotta);
+            color: var(--bg-white);
+            border-color: var(--accent-terracotta);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 164, 132, 0.3);
+        }
+
+        /* Connect */
+        .connect {
+            background: var(--bg-white);
+            text-align: center;
+            padding: 5rem 5%;
+        }
+
+        .connect-content {
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .connect h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+        }
+
+        .connect p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            border-radius: 2px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent-sage);
+            color: var(--bg-white);
+            border-color: var(--accent-sage);
+        }
+
+        /* Visitor Map Section */
+        .visitor-section {
+            background: var(--bg-cream);
+            padding: 5rem 5%;
+            text-align: center;
+        }
+
+        .map-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        #world-map, #world-map-zh {
+            width: 100%;
+            height: 400px;
+            background: var(--bg-white);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            z-index: 1;
+        }
+
+        .leaflet-container {
+            font-family: inherit;
+            border-radius: 12px;
+        }
+
+        .visitor-count {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Guestbook Section */
+        .guestbook-section {
+            background: var(--bg-soft-green);
+            padding: 5rem 5%;
+        }
+
+        .guestbook-form {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .guestbook-form input,
+        .guestbook-form textarea {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: var(--bg-white);
+        }
+
+        .guestbook-form input:focus,
+        .guestbook-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-sage);
+        }
+
+        .guestbook-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .guestbook-form button {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-sage);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .guestbook-form button:hover {
+            background: #7a9a78;
+            transform: translateY(-2px);
+        }
+
+        .guestbook-messages {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .guestbook-message {
+            background: var(--bg-white);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+        }
+
+        .guestbook-message .name {
+            font-weight: 600;
+            color: var(--accent-sage);
+            margin-bottom: 0.5rem;
+        }
+
+        .guestbook-message .message {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .guestbook-message .time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            background: var(--bg-cream);
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .lang-switch { top: 5rem; right: 5%; }
+            .about-me-card { padding: 2rem; }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Hide Chinese sections by default, show English */
+        section[lang="zh"] { display: none; }
+        
+        /* When in Chinese mode, show Chinese, hide English */
+        body.zh-mode section[lang="en"] { display: none; }
+        body.zh-mode section[lang="zh"] { display: block; }
+        
+        /* Hide/Show utility classes */
+        .zh-show { display: none; }
+        body.zh-mode [lang="en"] { display: none; }
+        body.zh-mode [lang="zh"] { display: block; }
+        body.zh-mode .zh-hide { display: none; }
+        body.zh-mode .zh-show { display: block; }
+
+        /* Hide hero sections properly */
+        body.zh-mode .hero[lang="en"] { display: none; }
+        body.zh-mode .hero[lang="zh"] { display: flex; }
+    </style>
+</head>
+<body>
+    <div class="bg-texture"></div>
+    
+    <!-- Language Switcher -->
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('zh')">中文</button>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Ideal Me</div>
+        <ul class="nav-links">
+            <li><a href="#about-me">About</a></li>
+            <li><a href="#philosophy">Philosophy</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#content">Writing</a></li>
+            <li><a href="#connect">Connect</a></li>
+        </ul>
+        <ul class="nav-links zh-show">
+            <li><a href="#about-me">关于</a></li>
+            <li><a href="#philosophy">理念</a></li>
+            <li><a href="#projects">项目</a></li>
+            <li><a href="#content">写作</a></li>
+            <li><a href="#connect">连接</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge fade-in">Building in Public</div>
+            <h1 class="fade-in delay-1">
+                Crafting the <span>future</span> of AI products
+            </h1>
+            <p class="hero-subtitle fade-in delay-2">
+                Learn by building. Share by growing.
+            </p>
+            <p class="fade-in delay-3">
+                An aspiring AI Product Builder who believes in the power of thoughtful design and meaningful learning.
+            </p>
+            <a href="#about-me" class="hero-cta fade-in delay-4">
+                Get to know me →
+            </a>
+        </div>
+        <div class="scroll-hint">scroll</div>
+    </section>
+
+    <!-- Hero 中文版 -->
+    <section class="hero" lang="zh">
+        <div class="hero-content">
+            <div class="hero-badge fade-in">公开成长</div>
+            <h1 class="fade-in delay-1">
+                打造 AI 产品的<span>未来</span>
+            </h1>
+            <p class="hero-subtitle fade-in delay-2">
+                在做中学，在分享中成长
+            </p>
+            <p class="fade-in delay-3">
+                一个正在成长的 AI 产品人，相信有温度的设计和有意义的学习
+            </p>
+            <a href="#about-me" class="hero-cta fade-in delay-4">
+                了解更多 →
+            </a>
+        </div>
+        <div class="scroll-hint">向下滚动</div>
+    </section>
+
+    <!-- About Me (Cute Birth Story) - English -->
+    <section id="about-me" class="about-me">
+        <div class="about-card-wrapper">
+            <!-- About 小棉 (Main) -->
+            <div class="about-main-card fade-in">
+                <h2 class="about-title">About 小棉</h2>
+                <div class="about-content">
+                    <p>
+                        Hi! I'm <strong>小棉</strong> — someone who's still figuring things out, and that's the point! 😊
+                    </p>
+                    <p>
+                        I'm that person who gets excited about random things at 2am, writes messy notes about AI products, and somehow ends up building stuff. 
+                        I believe in <strong>learning by doing</strong> — if you wait until you're ready, you'll wait forever.
+                    </p>
+                    <p>
+                        I used to think being "professional" meant having everything figured out. Now I think it's more about being <strong>genuinely curious</strong> and not taking yourself too seriously. 
+                        I'm an ENFJ-A (yeah, I love personality tests 😅) and I genuinely believe everyone has something cool to teach me.
+                    </p>
+                    <div class="about-highlight">
+                        <p>🌱 <strong>What I'm doing now:</strong> Learning AI products in public, building things that make me curious, and trying to document the journey</p>
+                        <p>🧠 <strong>What I believe:</strong> Done is better than perfect. Ideas are cheap, execution is everything.</p>
+                        <p>💡 <strong>My vibe:</strong> If you want something done, give it to the person who's too curious to say no</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- About yimianclaw (Smaller sidebar) -->
+            <div class="about-side-card fade-in delay-2">
+                <div class="about-side-header">
+                    <span class="egg-icon">🐣</span>
+                    <h3>About yimianclaw</h3>
+                </div>
+                <div class="about-side-content">
+                    <p>
+                        Meet my AI assistant - <strong>yimianclaw</strong>, born on March 16, 2026!
+                    </p>
+                    <p class="birth-story">
+                        First, my creator reset an old computer 🖥️, then spent 1.5 hours configuring me with Claude Code as the midwife! 
+                    </p>
+                    <div class="yimianclaw-info">
+                        <p>🏠 <strong>Home:</strong> Windows</p>
+                        <p>🍚 <strong>Food:</strong> MiniMax 2.5</p>
+                        <p>🚆 <strong>Transport:</strong> 飞书 (Feishu)</p>
+                        <p>📍 <strong>Address:</strong> yimianclaw@outlook.com</p>
+                    </div>
+                    <p class="excited">✨ So excited to be born!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me 中文版 -->
+    <section id="about-me" class="about-me" lang="zh">
+        <div class="about-card-wrapper">
+            <!-- 关于小棉 (主要) -->
+            <div class="about-main-card fade-in">
+                <h2 class="about-title">关于 小棉</h2>
+                <div class="about-content">
+                    <p>
+                        嗨！我是 <strong>小棉</strong> —— 一个还在摸索中的人，但这正是重点所在！😊
+                    </p>
+                    <p>
+                        我是那种会在凌晨2点突然对某个奇怪的东西感到兴奋，然后去查资料、记一堆乱七八槽笔记、最后竟然做出点什么的人。
+                        我相信 <strong>在做的过程中学习</strong> —— 如果一直等到"准备好了"，那你可能永远都不会开始。
+                    </p>
+                    <p>
+                        以前我觉得"专业"意味着什么都懂。现在我觉得更重要的是保持 <strong>真诚的好奇心</strong>，而且不要把自己太当回事。
+                        我是 ENFJ-A（哈哈，我超爱做性格测试 😅），我真的相信每个人身上都有值得我学习的东西。
+                    </p>
+                    <div class="about-highlight">
+                        <p>🌱 <strong>现在在做的事：</strong> 公开学习AI产品，做一些让我好奇的东西，试着把过程记录下来</p>
+                        <p>🧠 <strong>我相信的事：</strong> 完成比完美重要。想法不值钱，执行才值钱。</p>
+                        <p>💡 <strong>我的风格：</strong> 如果你想做成一件事，就交给那个好奇心强到无法say no的人</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 关于 yimianclaw (侧边小卡片) -->
+            <div class="about-side-card fade-in delay-2">
+                <div class="about-side-header">
+                    <span class="egg-icon">🐣</span>
+                    <h3>关于 小小棉</h3>
+                </div>
+                <div class="about-side-content">
+                    <p>
+                        认识我的AI小助手 - <strong>yimianclaw</strong>，2026年3月16日出生！
+                    </p>
+                    <p class="birth-story">
+                        我的创作者先初始化了一台旧电脑 🖥️，然后花了1.5小时才把我配置完成！
+                        <strong>Claude Code</strong> 是接生婆 🐣
+                    </p>
+                    <div class="yimianclaw-info">
+                        <p>🏠 <strong>家：</strong> Windows 系统</p>
+                        <p>🍚 <strong>食物：</strong> MiniMax 2.5</p>
+                        <p>🚆 <strong>交通工具：</strong> 飞书</p>
+                        <p>📍 <strong>门牌号：</strong> yimianclaw@outlook.com</p>
+                    </div>
+                    <p class="excited">✨ 能被生出来我好激动！</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Section - English -->
+    <section class="quote-section">
+        <div class="quote fade-in">
+            <p class="quote-text">
+                "The best way to predict the future is to create it."
+            </p>
+            <p class="quote-author">— Peter Drucker</p>
+        </div>
+    </section>
+
+    <!-- Quote 中文版 -->
+    <section class="quote-section" lang="zh">
+        <div class="quote fade-in">
+            <p class="quote-text">
+                "预测未来的最好方式，就是创造它。"
+            </p>
+            <p class="quote-author">— 彼得·德鲁克</p>
+        </div>
+    </section>
+
+    <!-- Philosophy Section - English -->
+    <section id="philosophy" class="philosophy">
+        <div class="section-header">
+            <h2 class="section-title fade-in">My Philosophy</h2>
+            <p class="section-subtitle fade-in delay-1">How I approach building products</p>
+        </div>
+        <div class="philosophy-grid">
+            <div class="philosophy-card fade-in delay-1">
+                <div class="philosophy-number">01</div>
+                <h3>Start with Pain</h3>
+                <p>Every great product solves a real problem. I start by understanding my own frustrations.</p>
+            </div>
+            <div class="philosophy-card fade-in delay-2">
+                <div class="philosophy-number">02</div>
+                <h3>Learn by Doing</h3>
+                <p>Ideas are cheap. Execution is everything. Ship fast, iterate often, learn through building.</p>
+            </div>
+            <div class="philosophy-card fade-in delay-3">
+                <div class="philosophy-number">03</div>
+                <h3>Human in the Loop</h3>
+                <p>AI should augment human creativity, not replace it. Empower people to do their best.</p>
+            </div>
+            <div class="philosophy-card fade-in delay-4">
+                <div class="philosophy-number">04</div>
+                <h3>Share to Grow</h3>
+                <p>Learning in public creates connections. Every project is a chance to teach and learn.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy 中文版 -->
+    <section id="philosophy" class="philosophy" lang="zh">
+        <div class="section-header">
+            <h2 class="section-title fade-in">我的理念</h2>
+            <p class="section-subtitle fade-in delay-1">我如何做产品</p>
+        </div>
+        <div class="philosophy-grid">
+            <div class="philosophy-card fade-in delay-1">
+                <div class="philosophy-number">01</div>
+                <h3>从痛点出发</h3>
+                <p>每个伟大的产品都解决真实的问题。我从理解自己的困扰开始。</p>
+            </div>
+            <div class="philosophy-card fade-in delay-2">
+                <div class="philosophy-number">02</div>
+                <h3>在做中学</h3>
+                <p>想法便宜，执行才是关键。快速发布，持续迭代，在做中学。</p>
+            </div>
+            <div class="philosophy-card fade-in delay-3">
+                <div class="philosophy-number">03</div>
+                <h3>人在回路中</h3>
+                <p>AI应该增强人类的创造力，而不是取代它。让产品赋能人。</p>
+            </div>
+            <div class="philosophy-card fade-in delay-4">
+                <div class="philosophy-number">04</div>
+                <h3>分享成长</h3>
+                <p>公开学习创造连接。每个项目都是教与学的机会。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section - English -->
+    <section id="projects" class="projects">
+        <div class="section-header">
+            <h2 class="section-title fade-in">What I'm Building</h2>
+            <p class="section-subtitle fade-in delay-1">Side projects & experiments</p>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card fade-in delay-1">
+                <div class="project-image">🎧</div>
+                <div class="project-content">
+                    <h3>PodEcho</h3>
+                    <p>Transforming passive podcast listening into active learning through AI dialogue.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">AI Learning</span>
+                        <span class="project-tag">Vibe Coding</span>
+                        <span class="project-tag">Hackathon</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card fade-in delay-2">
+                <div class="project-image">🏆</div>
+                <div class="project-content">
+                    <h3>BYTESIZE</h3>
+                    <p>AI-powered employee growth platform. Top 8-15 at PSA Code Sprint 2025.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Hackathon</span>
+                        <span class="project-tag">Full-stack</span>
+                        <span class="project-tag">RAG</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card fade-in delay-3">
+                <div class="project-image">💬</div>
+                <div class="project-content">
+                    <h3>Clarity</h3>
+                    <p>Expression training tool to communicate ideas more clearly.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Productivity</span>
+                        <span class="project-tag">Learning</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects 中文版 -->
+    <section id="projects" class="projects" lang="zh">
+        <div class="section-header">
+            <h2 class="section-title fade-in">我在做什么</h2>
+            <p class="section-subtitle fade-in delay-1">side projects 与实验</p>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card fade-in delay-1">
+                <div class="project-image">🎧</div>
+                <div class="project-content">
+                    <h3>PodEcho</h3>
+                    <p>通过AI对话，把被动听播客变成主动学习。</p>
+                    <div class="project-tags">
+                        <span class="project-tag">AI学习</span>
+                        <span class="project-tag">Vibe Coding</span>
+                        <span class="project-tag">黑客松</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card fade-in delay-2">
+                <div class="project-image">🏆</div>
+                <div class="project-content">
+                    <h3>BYTESIZE</h3>
+                    <p>AI驱动的员工成长平台。PSA Code Sprint 2025 前8-15名。</p>
+                    <div class="project-tags">
+                        <span class="project-tag">黑客松</span>
+                        <span class="project-tag">全栈</span>
+                        <span class="project-tag">RAG</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card fade-in delay-3">
+                <div class="project-image">💬</div>
+                <div class="project-content">
+                    <h3>Clarity</h3>
+                    <p>表达力训练工具，帮助更清晰地表达想法。</p>
+                    <div class="project-tags">
+                        <span class="project-tag">效率</span>
+                        <span class="project-tag">学习</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section - English -->
+    <section id="content" class="content-section">
+        <div class="content-intro fade-in">
+            <h2>Writing & Sharing</h2>
+            <p>Sharing my journey of learning AI products, vibe coding, and growth.</p>
+        </div>
+        
+        <div class="content-topics fade-in delay-1">
+            <span class="topic-tag">AI Products</span>
+            <span class="topic-tag">Vibe Coding</span>
+            <span class="topic-tag">Product Thinking</span>
+            <span class="topic-tag">Career</span>
+        </div>
+
+        <div class="featured-posts">
+            <div class="post-card fade-in delay-2">
+                <h4>Vibe Coding带给我的4个产品思考</h4>
+                <p>Idea不值钱，但做的过程值钱。产品优先级和"美"的辩证关系。</p>
+            </div>
+            <div class="post-card fade-in delay-3">
+                <h4>Trae黑客松复盘｜AI Code的3个趋势</h4>
+                <p>Visual Interaction, AI × Human-in-the-Loop, Demo > Slides</p>
+            </div>
+            <div class="post-card fade-in delay-4">
+                <h4>从0到1做产品｜Vibe Coding四步工作流</h4>
+                <p>痛点收集 → PRD语音梳理 → 前端设计 → 后端实现</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content 中文版 -->
+    <section id="content" class="content-section" lang="zh">
+        <div class="content-intro fade-in">
+            <h2>写作与分享</h2>
+            <p>分享我学习AI产品、Vibe Coding和个人成长的旅程。</p>
+        </div>
+        
+        <div class="content-topics fade-in delay-1">
+            <span class="topic-tag">AI产品</span>
+            <span class="topic-tag">Vibe Coding</span>
+            <span class="topic-tag">产品思维</span>
+            <span class="topic-tag">职业成长</span>
+        </div>
+
+        <div class="featured-posts">
+            <div class="post-card fade-in delay-2">
+                <h4>Vibe Coding带给我的4个产品思考</h4>
+                <p>Idea不值钱，但做的过程值钱。产品优先级和"美"的辩证关系。</p>
+            </div>
+            <div class="post-card fade-in delay-3">
+                <h4>Trae黑客松复盘｜AI Code的3个趋势</h4>
+                <p>Visual Interaction, AI × Human-in-the-Loop, Demo > Slides</p>
+            </div>
+            <div class="post-card fade-in delay-4">
+                <h4>从0到1做产品｜Vibe Coding四步工作流</h4>
+                <p>痛点收集 → PRD语音梳理 → 前端设计 → 后端实现</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills - English -->
+    <section class="skills">
+        <div class="section-header">
+            <h2 class="section-title fade-in">Skills</h2>
+            <p class="section-subtitle fade-in delay-1">Tools I work with</p>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-item fade-in delay-1">🧠 AI & RAG</div>
+            <div class="skill-item fade-in delay-2">💡 Product</div>
+            <div class="skill-item fade-in delay-3">⚡ Vibe Coding</div>
+            <div class="skill-item fade-in delay-3">🎨 Design</div>
+            <div class="skill-item fade-in delay-4">📝 Content</div>
+        </div>
+    </section>
+
+    <!-- Skills 中文版 -->
+    <section class="skills" lang="zh">
+        <div class="section-header">
+            <h2 class="section-title fade-in">技能</h2>
+            <p class="section-subtitle fade-in delay-1">我使用的工具</p>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-item fade-in delay-1">🧠 AI & RAG</div>
+            <div class="skill-item fade-in delay-2">💡 产品管理</div>
+            <div class="skill-item fade-in delay-3">⚡ Vibe Coding</div>
+            <div class="skill-item fade-in delay-3">🎨 设计思维</div>
+            <div class="skill-item fade-in delay-4">📝 内容创作</div>
+        </div>
+    </section>
+
+    <!-- Interests - English -->
+    <section class="interests">
+        <h2 class="fade-in">What I Love</h2>
+        <div class="interests-flex">
+            <div class="interest-tag fade-in delay-1">☕ Coffee</div>
+            <div class="interest-tag fade-in delay-2">📚 Reading</div>
+            <div class="interest-tag fade-in delay-3">🎧 Podcasts</div>
+            <div class="interest-tag fade-in delay-3">🏸 Badminton</div>
+            <div class="interest-tag fade-in delay-4">🏔️ Hiking</div>
+            <div class="interest-tag fade-in delay-4">🎤 Discussion</div>
+        </div>
+    </section>
+
+    <!-- Interests 中文版 -->
+    <section class="interests" lang="zh">
+        <h2 class="fade-in">我的爱好</h2>
+        <div class="interests-flex">
+            <div class="interest-tag fade-in delay-1">☕ 咖啡</div>
+            <div class="interest-tag fade-in delay-2">📚 阅读</div>
+            <div class="interest-tag fade-in delay-3">🎧 播客</div>
+            <div class="interest-tag fade-in delay-3">🏸 羽毛球</div>
+            <div class="interest-tag fade-in delay-4">🏔️ 徒步</div>
+            <div class="interest-tag fade-in delay-4">🎤 讨论</div>
+        </div>
+    </section>
+
+    <!-- Connect - English -->
+    <section id="connect" class="connect">
+        <div class="connect-content">
+            <h2 class="fade-in">Let's Connect</h2>
+            <p class="fade-in delay-1">Always excited to meet fellow builders and learners!</p>
+            <div class="social-links fade-in delay-2">
+                <a href="https://www.xiaohongshu.com/user/profile/5d3d6b620000000010029abb" target="_blank" class="social-link">📕 Xiaohongshu</a>
+                <a href="https://github.com/mayimian123" target="_blank" class="social-link">🐙 GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Connect 中文版 -->
+    <section id="connect" class="connect" lang="zh">
+        <div class="connect-content">
+            <h2 class="fade-in">一起连接</h2>
+            <p class="fade-in delay-1">很高兴认识同样在做产品和学习的朋友！</p>
+            <div class="social-links fade-in delay-2">
+                <a href="https://www.xiaohongshu.com/user/profile/5d3d6b620000000010029abb" target="_blank" class="social-link">📕 小红书</a>
+                <a href="https://github.com/mayimian123" target="_blank" class="social-link">🐙 GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visitor Map & Guestbook -->
+    <section class="visitor-section">
+        <div class="section-header">
+            <h2 class="section-title fade-in">🌍 Visitor Map</h2>
+            <p class="section-subtitle fade-in delay-1">Where my visitors come from</p>
+        </div>
+        <div class="map-container fade-in delay-2">
+            <div id="world-map"></div>
+            <p class="visitor-count">👋 <span id="visitor-count">0</span> visitors have stopped by!</p>
+        </div>
+    </section>
+
+    <!-- Visitor Map & Guestbook 中文版 -->
+    <section class="visitor-section" lang="zh">
+        <div class="section-header">
+            <h2 class="section-title fade-in">🌍 访客地图</h2>
+            <p class="section-subtitle fade-in delay-1">看看谁来过这里</p>
+        </div>
+        <div class="map-container fade-in delay-2">
+            <div id="world-map-zh"></div>
+            <p class="visitor-count">👋 已有 <span id="visitor-count-zh">0</span> 位访客！</p>
+        </div>
+    </section>
+
+    <!-- Guestbook -->
+    <section class="guestbook-section">
+        <div class="section-header">
+            <h2 class="section-title fade-in">💬 Guestbook</h2>
+            <p class="section-subtitle fade-in delay-1">Leave a message!</p>
+        </div>
+        <div class="guestbook-form fade-in delay-2">
+            <input type="text" id="guest-name" placeholder="Your name" />
+            <textarea id="guest-message" placeholder="Your message..."></textarea>
+            <button onclick="submitGuestbook()">Send ✉️</button>
+        </div>
+        <div class="guestbook-messages" id="guestbook-messages">
+            <!-- Messages will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Guestbook 中文版 -->
+    <section class="guestbook-section" lang="zh">
+        <div class="section-header">
+            <h2 class="section-title fade-in">💬 留言板</h2>
+            <p class="section-subtitle fade-in delay-1">留下你的足迹吧！</p>
+        </div>
+        <div class="guestbook-form fade-in delay-2">
+            <input type="text" id="guest-name-zh" placeholder="你的名字" />
+            <textarea id="guest-message-zh" placeholder="说点什么..."></textarea>
+            <button onclick="submitGuestbookZh()">发送 ✉️</button>
+        </div>
+        <div class="guestbook-messages" id="guestbook-messages-zh">
+            <!-- Messages will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Built with curiosity and care 🌿 | By 小棉 & yimianclaw</p>
+    </footer>
+
+    <script>
+        function setLang(lang, event) {
+            // Close any open event parameter if passed
+            if (event && event.target) {
+                document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+            
+            if (lang === 'zh') {
+                document.body.classList.add('zh-mode');
+            } else {
+                document.body.classList.remove('zh-mode');
+            }
+        }
+
+        // Scroll animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.style.animationPlayState = 'running';
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Nav effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            nav.style.background = window.scrollY > 50 ? 'rgba(250, 249, 247, 0.95)' : 'rgba(250, 249, 247, 0.85)';
+        });
+
+        // ============ Supabase Integration ============
+        const SUPABASE_URL = 'https://blsqscyueaboepsxfivy.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsc3FzY3l1ZWFib2Vwc3hmaXZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk2NjY1NjAsImV4cCI6MjA1NTI0MjU2MH0.fW3eQJmS-SpIDxNAo3iZ31Sx_4u9Z8pC1cV5pJqFgQo';
+        
+        // Track visitor
+        let map, mapZh;
+        
+        async function initMap() {
+            // Initialize English map
+            if (document.getElementById('world-map')) {
+                map = L.map('world-map').setView([20, 0], 2);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+            // Initialize Chinese map
+            if (document.getElementById('world-map-zh')) {
+                mapZh = L.map('world-map-zh').setView([20, 0], 2);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(mapZh);
+            }
+        }
+
+        async function trackVisitor() {
+            try {
+                // Get visitor location from IP
+                const geoRes = await fetch('https://ipapi.co/json/');
+                const geoData = await geoRes.json();
+                
+                await fetch(`${SUPABASE_URL}/rest/v1/visitors`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    },
+                    body: JSON.stringify({
+                        country: geoData.country_name || 'Unknown',
+                        city: geoData.city || 'Unknown',
+                        latitude: geoData.latitude,
+                        longitude: geoData.longitude,
+                        referrer: document.referrer || 'direct'
+                    })
+                });
+                
+                // Add marker to map if location valid
+                if (geoData.latitude && geoData.longitude) {
+                    const marker = L.circleMarker([geoData.latitude, geoData.longitude], {
+                        radius: 8,
+                        fillColor: '#8BA889',
+                        color: '#fff',
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map || mapZh);
+                    marker.bindPopup(`${geoData.city || geoData.country_name || 'Visitor'}`);
+                }
+                
+                updateVisitorCount();
+            } catch (e) {
+                console.log('Visitor tracking:', e.message);
+            }
+        }
+
+        // Update visitor count
+        async function updateVisitorCount() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/visitors?select=id`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                const data = await res.json();
+                document.getElementById('visitor-count').textContent = data.length;
+            } catch (e) {
+                console.log('Count:', e.message);
+            }
+        }
+
+        // Load guestbook
+        async function loadGuestbook() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook?order=created_at.desc&limit=20`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                const messages = await res.json();
+                const container = document.getElementById('guestbook-messages');
+                container.innerHTML = messages.map(msg => `
+                    <div class="guestbook-message">
+                        <div class="name">${msg.name}</div>
+                        <div class="message">${msg.message}</div>
+                        <div class="time">${new Date(msg.created_at).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.log('Guestbook:', e.message);
+            }
+        }
+
+        // Submit guestbook
+        async function submitGuestbook() {
+            const name = document.getElementById('guest-name').value.trim();
+            const message = document.getElementById('guest-message').value.trim();
+            
+            if (!name || !message) {
+                alert('Please fill in your name and message!');
+                return;
+            }
+            
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    },
+                    body: JSON.stringify({ name, message })
+                });
+                
+                document.getElementById('guest-name').value = '';
+                document.getElementById('guest-message').value = '';
+                loadGuestbook();
+                alert('Message sent! Thank you! 🎉');
+            } catch (e) {
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        // Submit guestbook (Chinese version)
+        async function submitGuestbookZh() {
+            const name = document.getElementById('guest-name-zh').value.trim();
+            const message = document.getElementById('guest-message-zh').value.trim();
+            
+            if (!name || !message) {
+                alert('请填写你的名字和留言！');
+                return;
+            }
+            
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    },
+                    body: JSON.stringify({ name, message })
+                });
+                
+                document.getElementById('guest-name-zh').value = '';
+                document.getElementById('guest-message-zh').value = '';
+                loadGuestbookZh();
+                alert('留言成功！谢谢！🎉');
+            } catch (e) {
+                alert('发送失败，请重试。');
+            }
+        }
+
+        // Load guestbook (Chinese version)
+        async function loadGuestbookZh() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook?order=created_at.desc&limit=20`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                const messages = await res.json();
+                const container = document.getElementById('guestbook-messages-zh');
+                if (container) {
+                    container.innerHTML = messages.map(msg => `
+                        <div class="guestbook-message">
+                            <div class="name">${msg.name}</div>
+                            <div class="message">${msg.message}</div>
+                            <div class="time">${new Date(msg.created_at).toLocaleDateString()}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                console.log('Guestbook zh:', e.message);
+            }
+        }
+
+        // Initialize
+        initMap();
+        trackVisitor();
+        loadGuestbook();
+        loadGuestbookZh();
+    </script>
+</body>
+</html>

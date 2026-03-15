@@ -1,0 +1,14 @@
+{
+  "name": "ideal-me",
+  "version": "1.0.0",
+  "description": "A personal portfolio website showcasing who I aspire to become - an AI Product Manager",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
