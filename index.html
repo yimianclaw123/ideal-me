@@ -7,8 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Playfair+Display:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
         :root {
             --bg-cream: #FAF9F7;
@@ -820,10 +819,6 @@
             z-index: 1;
         }
 
-        .leaflet-container {
-            font-family: inherit;
-            border-radius: 12px;
-        }
 
         .visitor-count {
             margin-top: 1rem;
@@ -880,6 +875,225 @@
         .guestbook-form button:hover {
             background: #7a9a78;
             transform: translateY(-2px);
+        }
+
+        .guestbook-options {
+            display: flex;
+            align-items: center;
+            margin: 0.25rem 0;
+        }
+
+        .anonymous-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .anonymous-check:hover {
+            color: var(--accent-sage);
+        }
+
+        .anonymous-check input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-sage);
+            cursor: pointer;
+        }
+
+        /* Guestbook Messages */
+        .guestbook-messages {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .guestbook-message {
+            background: var(--bg-white);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            position: relative;
+            transition: all 0.3s ease;
+            animation: messageSlideIn 0.4s ease;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .guestbook-message:hover {
+            box-shadow: var(--shadow-soft);
+            border-color: var(--accent-sage);
+        }
+
+        .guestbook-message .name {
+            font-weight: 600;
+            color: var(--accent-sage);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .guestbook-message .name .anonymous-badge {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            background: var(--bg-soft-green);
+            color: var(--accent-sage);
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .guestbook-message .message {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .guestbook-message .time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .guestbook-message .delete-btn {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .guestbook-message:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .guestbook-message .delete-btn:hover {
+            background: var(--accent-coral);
+            color: var(--bg-white);
+            border-color: var(--accent-coral);
+        }
+
+        /* Delete Modal */
+        .delete-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .delete-modal.show {
+            display: flex;
+        }
+
+        .delete-modal-content {
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .delete-modal-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .delete-modal-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .delete-modal-content input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .delete-modal-content input:focus {
+            outline: none;
+            border-color: var(--accent-sage);
+        }
+
+        .delete-modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .delete-modal-buttons button {
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-modal-buttons .cancel-btn {
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        .delete-modal-buttons .confirm-btn {
+            background: var(--accent-coral);
+            border: none;
+            color: var(--bg-white);
+        }
+
+        .delete-modal-buttons .confirm-btn:hover {
+            background: #ff6b6b;
+        }
+
+        .delete-success {
+            color: var(--accent-sage) !important;
+            font-weight: 500;
         }
 
         .guestbook-messages {
@@ -1448,14 +1662,15 @@
         </div>
     </section>
 
-    <!-- Visitor Map & Guestbook -->
+    <!-- Visitor Map Section -->
     <section class="visitor-section">
         <div class="section-header">
             <h2 class="section-title fade-in">🌍 Visitor Map</h2>
             <p class="section-subtitle fade-in delay-1">Where my visitors come from</p>
         </div>
         <div class="map-container fade-in delay-2">
-            <div id="world-map"></div>
+            <!-- ClustrMaps Widget -->
+            <div id="clustrmaps-widget" style="width: 100%; height: 400px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-light); overflow: hidden;"></div>
             <p class="visitor-count">👋 <span id="visitor-count">0</span> visitors have stopped by!</p>
         </div>
     </section>
@@ -1467,7 +1682,8 @@
             <p class="section-subtitle fade-in delay-1">看看谁来过这里</p>
         </div>
         <div class="map-container fade-in delay-2">
-            <div id="world-map-zh"></div>
+            <!-- ClustrMaps Widget -->
+            <div id="clustrmaps-widget-zh" style="width: 100%; height: 400px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-light); overflow: hidden;"></div>
             <p class="visitor-count">👋 已有 <span id="visitor-count-zh">0</span> 位访客！</p>
         </div>
     </section>
@@ -1481,6 +1697,12 @@
         <div class="guestbook-form fade-in delay-2">
             <input type="text" id="guest-name" placeholder="Your name" />
             <textarea id="guest-message" placeholder="Your message..."></textarea>
+            <div class="guestbook-options">
+                <label class="anonymous-check">
+                    <input type="checkbox" id="guest-anonymous" />
+                    <span>👤 Leave as anonymous</span>
+                </label>
+            </div>
             <button onclick="submitGuestbook()">Send ✉️</button>
         </div>
         <div class="guestbook-messages" id="guestbook-messages">
@@ -1497,6 +1719,12 @@
         <div class="guestbook-form fade-in delay-2">
             <input type="text" id="guest-name-zh" placeholder="你的名字" />
             <textarea id="guest-message-zh" placeholder="说点什么..."></textarea>
+            <div class="guestbook-options">
+                <label class="anonymous-check">
+                    <input type="checkbox" id="guest-anonymous-zh" />
+                    <span>👤 匿名留言</span>
+                </label>
+            </div>
             <button onclick="submitGuestbookZh()">发送 ✉️</button>
         </div>
         <div class="guestbook-messages" id="guestbook-messages-zh">
@@ -1510,12 +1738,14 @@
     </footer>
 
     <script>
-        function setLang(lang, event) {
-            // Close any open event parameter if passed
-            if (event && event.target) {
-                document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-                event.target.classList.add('active');
-            }
+        function setLang(lang) {
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((lang === 'en' && btn.textContent === 'EN') || (lang === 'zh' && btn.textContent === '中文')) {
+                    btn.classList.add('active');
+                }
+            });
             
             if (lang === 'zh') {
                 document.body.classList.add('zh-mode');
@@ -1555,24 +1785,41 @@
         const SUPABASE_URL = 'https://blsqscyueaboepsxfivy.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsc3FzY3l1ZWFib2Vwc3hmaXZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk2NjY1NjAsImV4cCI6MjA1NTI0MjU2MH0.fW3eQJmS-SpIDxNAo3iZ31Sx_4u9Z8pC1cV5pJqFgQo';
         
-        // Track visitor
-        let map, mapZh;
-        
-        async function initMap() {
-            // Initialize English map
-            if (document.getElementById('world-map')) {
-                map = L.map('world-map').setView([20, 0], 2);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-            }
-            // Initialize Chinese map
-            if (document.getElementById('world-map-zh')) {
-                mapZh = L.map('world-map-zh').setView([20, 0], 2);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
-                }).addTo(mapZh);
-            }
+        // ClustrMaps - Beautiful visitor map
+        async function initClustrMaps() {
+            const script = document.createElement('script');
+            script.src = '//clustrmaps.com/globe.js?service=globe';
+            script.async = true;
+            script.defer = true;
+            script.onload = () => {
+                // Initialize for EN
+                if (document.getElementById('clustrmaps-widget')) {
+                    window.ClstrtmPls = {
+                        id: 'clustrmaps-widget',
+                        popUp: 'search',
+                        bgMap: 'rgba(250,249,247,1)',
+                        mapStyle: 'silver',
+                        seaColor: 'rgba(250,249,247,1)',
+                        landColor: 'rgba(139,168,137,0.3)',
+                        visitedColor: 'rgba(196,164,132,0.5)',
+                        markerColor: '#8BA889'
+                    };
+                }
+                // Initialize for ZH
+                if (document.getElementById('clustrmaps-widget-zh')) {
+                    window.ClstrtmPlsZh = {
+                        id: 'clustrmaps-widget-zh',
+                        popUp: 'search',
+                        bgMap: 'rgba(250,249,247,1)',
+                        mapStyle: 'silver',
+                        seaColor: 'rgba(250,249,247,1)',
+                        landColor: 'rgba(139,168,137,0.3)',
+                        visitedColor: 'rgba(196,164,132,0.5)',
+                        markerColor: '#8BA889'
+                    };
+                }
+            };
+            document.head.appendChild(script);
         }
 
         async function trackVisitor() {
@@ -1632,6 +1879,32 @@
             }
         }
 
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render guestbook message with anonymous badge and delete button
+        function renderGuestbookMessage(msg, lang) {
+            const nameDisplay = msg.is_anonymous ? 
+                (lang === 'zh' ? '匿名小可爱' : 'Anonymous Friend') : escapeHtml(msg.name);
+            const anonymousBadge = msg.is_anonymous ? 
+                `<span class="anonymous-badge">${lang === 'zh' ? '匿名' : 'Anonymous'}</span>` : '';
+            
+            return `
+                <div class="guestbook-message" data-id="${msg.id}">
+                    <div class="name">${nameDisplay} ${anonymousBadge}</div>
+                    <div class="message">${escapeHtml(msg.message)}</div>
+                    <div class="time">
+                        <span>${new Date(msg.created_at).toLocaleDateString()}</span>
+                        <button class="delete-btn" onclick="showDeleteModal(${msg.id})">🗑️ Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+
         // Load guestbook
         async function loadGuestbook() {
             try {
@@ -1643,13 +1916,9 @@
                 });
                 const messages = await res.json();
                 const container = document.getElementById('guestbook-messages');
-                container.innerHTML = messages.map(msg => `
-                    <div class="guestbook-message">
-                        <div class="name">${msg.name}</div>
-                        <div class="message">${msg.message}</div>
-                        <div class="time">${new Date(msg.created_at).toLocaleDateString()}</div>
-                    </div>
-                `).join('');
+                if (container) {
+                    container.innerHTML = messages.map(msg => renderGuestbookMessage(msg, 'en')).join('');
+                }
             } catch (e) {
                 console.log('Guestbook:', e.message);
             }
@@ -1659,9 +1928,14 @@
         async function submitGuestbook() {
             const name = document.getElementById('guest-name').value.trim();
             const message = document.getElementById('guest-message').value.trim();
+            const isAnonymous = document.getElementById('guest-anonymous').checked;
             
-            if (!name || !message) {
-                alert('Please fill in your name and message!');
+            if (!name && !isAnonymous) {
+                alert('Please enter your name!');
+                return;
+            }
+            if (!message) {
+                alert('Please enter a message!');
                 return;
             }
             
@@ -1673,13 +1947,18 @@
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`
                     },
-                    body: JSON.stringify({ name, message })
+                    body: JSON.stringify({ 
+                        name: isAnonymous ? 'Anonymous' : name, 
+                        message: message,
+                        is_anonymous: isAnonymous
+                    })
                 });
                 
                 document.getElementById('guest-name').value = '';
                 document.getElementById('guest-message').value = '';
+                document.getElementById('guest-anonymous').checked = false;
                 loadGuestbook();
-                alert('Message sent! Thank you! 🎉');
+                showToast('Message sent! Thank you! 🎉', 'success');
             } catch (e) {
                 alert('Failed to send message. Please try again.');
             }
@@ -1689,9 +1968,14 @@
         async function submitGuestbookZh() {
             const name = document.getElementById('guest-name-zh').value.trim();
             const message = document.getElementById('guest-message-zh').value.trim();
+            const isAnonymous = document.getElementById('guest-anonymous-zh').checked;
             
-            if (!name || !message) {
-                alert('请填写你的名字和留言！');
+            if (!name && !isAnonymous) {
+                alert('请填写你的名字！');
+                return;
+            }
+            if (!message) {
+                alert('请填写留言内容！');
                 return;
             }
             
@@ -1703,8 +1987,22 @@
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`
                     },
-                    body: JSON.stringify({ name, message })
+                    body: JSON.stringify({ 
+                        name: isAnonymous ? 'Anonymous' : name, 
+                        message: message,
+                        is_anonymous: isAnonymous
+                    })
                 });
+                
+                document.getElementById('guest-name-zh').value = '';
+                document.getElementById('guest-message-zh').value = '';
+                document.getElementById('guest-anonymous-zh').checked = false;
+                loadGuestbookZh();
+                showToast('留言成功！谢谢！🎉', 'success');
+            } catch (e) {
+                alert('发送失败，请重试。');
+            }
+        }
                 
                 document.getElementById('guest-name-zh').value = '';
                 document.getElementById('guest-message-zh').value = '';
@@ -1727,13 +2025,7 @@
                 const messages = await res.json();
                 const container = document.getElementById('guestbook-messages-zh');
                 if (container) {
-                    container.innerHTML = messages.map(msg => `
-                        <div class="guestbook-message">
-                            <div class="name">${msg.name}</div>
-                            <div class="message">${msg.message}</div>
-                            <div class="time">${new Date(msg.created_at).toLocaleDateString()}</div>
-                        </div>
-                    `).join('');
+                    container.innerHTML = messages.map(msg => renderGuestbookMessage(msg, 'zh')).join('');
                 }
             } catch (e) {
                 console.log('Guestbook zh:', e.message);
@@ -1741,10 +2033,110 @@
         }
 
         // Initialize
-        initMap();
+        initClustrMaps();
         trackVisitor();
         loadGuestbook();
         loadGuestbookZh();
+
+        // Delete modal functions
+        let currentDeleteId = null;
+        
+        function showDeleteModal(id) {
+            currentDeleteId = id;
+            const modal = document.getElementById('delete-modal');
+            if (modal) {
+                modal.classList.add('show');
+                document.getElementById('delete-password').value = '';
+            }
+        }
+
+        function hideDeleteModal() {
+            const modal = document.getElementById('delete-modal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+            currentDeleteId = null;
+        }
+
+        async function confirmDelete() {
+            const password = document.getElementById('delete-password').value;
+            const adminPassword = 'yimianclaw2026';
+            
+            if (password !== adminPassword) {
+                alert('Incorrect password!');
+                return;
+            }
+            
+            if (!currentDeleteId) return;
+            
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/guestbook?id=eq.${currentDeleteId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                hideDeleteModal();
+                loadGuestbook();
+                loadGuestbookZh();
+                showToast('Message deleted! 🗑️', 'success');
+            } catch (e) {
+                alert('Failed to delete message.');
+            }
+        }
+
+        // Toast notification
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'success' ? 'var(--accent-sage)' : 'var(--accent-coral)'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                z-index: 3000;
+                animation: toastSlideUp 0.3s ease;
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideDown 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
     </script>
+    
+    <!-- Delete Modal -->
+    <div id="delete-modal" class="delete-modal" onclick="if(event.target === this) hideDeleteModal()">
+        <div class="delete-modal-content">
+            <h3>🗑️ Delete Message</h3>
+            <p>Enter admin password to delete:</p>
+            <input type="password" id="delete-password" placeholder="Password" />
+            <div class="delete-modal-buttons">
+                <button class="cancel-btn" onclick="hideDeleteModal()">Cancel</button>
+                <button class="confirm-btn" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes toastSlideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes toastSlideDown {
+            from { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+    </style>
 </body>
 </html>
