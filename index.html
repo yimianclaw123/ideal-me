@@ -1186,8 +1186,8 @@
     
     <!-- Language Switcher -->
     <div class="lang-switch">
-        <button class="lang-btn active" onclick="setLang('en')">EN</button>
-        <button class="lang-btn" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn zh" onclick="setLang('zh')">中文</button>
     </div>
 
     <!-- Navigation -->
@@ -1742,46 +1742,35 @@
     </footer>
 
     <script>
-        function setLang(lang) {
-            // Update button states
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-                const text = btn.textContent.trim().toLowerCase();
-                if ((lang === 'en' && text === 'en') || (lang === 'zh' && text.includes('中'))) {
-                    btn.classList.add('active');
-                }
+    // Language Toggle - Ultra Simple Version
+    (function() {
+        function toggleLang(lang) {
+            var sections = document.querySelectorAll('section[lang]');
+            sections.forEach(function(sec) {
+                sec.style.display = (sec.getAttribute('lang') === lang) ? 'block' : 'none';
             });
-            
-            // Show/hide sections directly
-            document.querySelectorAll('section[lang]').forEach(section => {
-                if (section.getAttribute('lang') === lang) {
-                    section.style.display = '';
-                } else {
-                    section.style.display = 'none';
-                }
+            var btns = document.querySelectorAll('.lang-btn');
+            btns.forEach(function(btn) {
+                btn.style.background = '';
+                btn.style.color = '';
             });
-            
-            // Also handle non-section elements with lang attribute
-            document.querySelectorAll('[lang]').forEach(el => {
-                if (el.tagName === 'SECTION') return; // already handled
-                if (el.getAttribute('lang') === lang) {
-                    el.style.display = '';
-                } else {
-                    el.style.display = 'none';
-                }
-            });
-            
-            // Save preference
-            localStorage.setItem('preferred-lang', lang);
+            var activeBtn = document.querySelector('.lang-btn.' + lang);
+            if (activeBtn) {
+                activeBtn.style.background = 'var(--accent-sage)';
+                activeBtn.style.color = 'white';
+            }
+            localStorage.setItem('lang', lang);
         }
         
-        // Load saved language preference on page load
+        window.setLang = toggleLang;
+        
+        // Load saved
         document.addEventListener('DOMContentLoaded', function() {
-            const savedLang = localStorage.getItem('preferred-lang');
-            if (savedLang) {
-                setLang(savedLang);
-            }
+            var saved = localStorage.getItem('lang') || 'en';
+            toggleLang(saved);
         });
+    })();
+    </script>
 
         // Scroll animations
         const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
