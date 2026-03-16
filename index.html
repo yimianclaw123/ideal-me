@@ -1207,6 +1207,15 @@
         /* Hide hero sections properly */
         body.zh-mode .hero[lang="en"] { display: none; }
         body.zh-mode .hero[lang="zh"] { display: flex; }
+        
+        /* Visitor Map - hide language specific titles */
+        .visitor-section h2[lang="zh"] { display: none; }
+        .visitor-section p[lang="zh"] { display: none; }
+        
+        body.zh-mode .visitor-section h2[lang="en"] { display: none; }
+        body.zh-mode .visitor-section p[lang="en"] { display: none; }
+        body.zh-mode .visitor-section h2[lang="zh"] { display: block; }
+        body.zh-mode .visitor-section p[lang="zh"] { display: block; }
     </style>
 </head>
 <body>
@@ -1245,7 +1254,7 @@
         <div class="hero-content">
             <div class="hero-badge fade-in">🐣 My Corner</div>
             <h1 class="fade-in delay-1">
-                Welcome to my <span>digital world</span>
+                Welcome to Amian's <span>digital world</span>
             </h1>
             <p class="hero-subtitle fade-in delay-2">
                 Learn by building. Share by growing.
@@ -1695,8 +1704,8 @@
     <section class="visitor-section">
         <div class="section-header">
             <h2 class="section-title fade-in" lang="en">🌍 Visitor Map</h2>
-            <h2 class="section-title fade-in" lang="zh">🌍 访客地图</h2>
             <p class="section-subtitle fade-in delay-1" lang="en">Where my visitors come from</p>
+            <h2 class="section-title fade-in" lang="zh">🌍 访客地图</h2>
             <p class="section-subtitle fade-in delay-1" lang="zh">看看谁来过这里</p>
         </div>
         <div class="map-container fade-in delay-2">
