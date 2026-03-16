@@ -1669,8 +1669,14 @@
             <p class="section-subtitle fade-in delay-1">Where my visitors come from</p>
         </div>
         <div class="map-container fade-in delay-2">
-            <!-- ClustrMaps Widget -->
-            <div id="clustrmaps-widget" style="width: 100%; height: 400px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-light); overflow: hidden;"></div>
+            <!-- Visitor Map Placeholder - Using simple visitor counter for now -->
+            <div style="width: 100%; height: 300px; background: linear-gradient(135deg, var(--bg-soft-green) 0%, var(--bg-cream) 100%); border-radius: 12px; border: 1px solid var(--border-light); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;">
+                <div style="font-size: 4rem;">🌍</div>
+                <p style="color: var(--text-secondary); text-align: center; max-width: 300px;">
+                    Visitor map coming soon!<br/>
+                    Register at <a href="https://clustrmaps.com" target="_blank" style="color: var(--accent-sage);">clustrmaps.com</a> to activate
+                </p>
+            </div>
             <p class="visitor-count">👋 <span id="visitor-count">0</span> visitors have stopped by!</p>
         </div>
     </section>
@@ -1682,8 +1688,14 @@
             <p class="section-subtitle fade-in delay-1">看看谁来过这里</p>
         </div>
         <div class="map-container fade-in delay-2">
-            <!-- ClustrMaps Widget -->
-            <div id="clustrmaps-widget-zh" style="width: 100%; height: 400px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-light); overflow: hidden;"></div>
+            <!-- 访客地图占位符 -->
+            <div style="width: 100%; height: 300px; background: linear-gradient(135deg, var(--bg-soft-green) 0%, var(--bg-cream) 100%); border-radius: 12px; border: 1px solid var(--border-light); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;">
+                <div style="font-size: 4rem;">🌍</div>
+                <p style="color: var(--text-secondary); text-align: center; max-width: 300px;">
+                    访客地图即将上线！<br/>
+                    访问 <a href="https://clustrmaps.com" target="_blank" style="color: var(--accent-sage);">clustrmaps.com</a> 注册后即可激活
+                </p>
+            </div>
             <p class="visitor-count">👋 已有 <span id="visitor-count-zh">0</span> 位访客！</p>
         </div>
     </section>
@@ -1785,41 +1797,10 @@
         const SUPABASE_URL = 'https://blsqscyueaboepsxfivy.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsc3FzY3l1ZWFib2Vwc3hmaXZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk2NjY1NjAsImV4cCI6MjA1NTI0MjU2MH0.fW3eQJmS-SpIDxNAo3iZ31Sx_4u9Z8pC1cV5pJqFgQo';
         
-        // ClustrMaps - Beautiful visitor map
-        async function initClustrMaps() {
-            const script = document.createElement('script');
-            script.src = '//clustrmaps.com/globe.js?service=globe';
-            script.async = true;
-            script.defer = true;
-            script.onload = () => {
-                // Initialize for EN
-                if (document.getElementById('clustrmaps-widget')) {
-                    window.ClstrtmPls = {
-                        id: 'clustrmaps-widget',
-                        popUp: 'search',
-                        bgMap: 'rgba(250,249,247,1)',
-                        mapStyle: 'silver',
-                        seaColor: 'rgba(250,249,247,1)',
-                        landColor: 'rgba(139,168,137,0.3)',
-                        visitedColor: 'rgba(196,164,132,0.5)',
-                        markerColor: '#8BA889'
-                    };
-                }
-                // Initialize for ZH
-                if (document.getElementById('clustrmaps-widget-zh')) {
-                    window.ClstrtmPlsZh = {
-                        id: 'clustrmaps-widget-zh',
-                        popUp: 'search',
-                        bgMap: 'rgba(250,249,247,1)',
-                        mapStyle: 'silver',
-                        seaColor: 'rgba(250,249,247,1)',
-                        landColor: 'rgba(139,168,137,0.3)',
-                        visitedColor: 'rgba(196,164,132,0.5)',
-                        markerColor: '#8BA889'
-                    };
-                }
-            };
-            document.head.appendChild(script);
+        // Visitor tracking (placeholder - using Supabase to count visitors)
+        function initVisitorTracking() {
+            // Just track visitors via API - no map needed for now
+            console.log('Visitor tracking initialized');
         }
 
         async function trackVisitor() {
@@ -1873,7 +1854,13 @@
                     }
                 });
                 const data = await res.json();
-                document.getElementById('visitor-count').textContent = data.length;
+                const count = data.length || 0;
+                if (document.getElementById('visitor-count')) {
+                    document.getElementById('visitor-count').textContent = count;
+                }
+                if (document.getElementById('visitor-count-zh')) {
+                    document.getElementById('visitor-count-zh').textContent = count;
+                }
             } catch (e) {
                 console.log('Count:', e.message);
             }
@@ -2033,7 +2020,7 @@
         }
 
         // Initialize
-        initClustrMaps();
+        initVisitorTracking();
         trackVisitor();
         loadGuestbook();
         loadGuestbookZh();
