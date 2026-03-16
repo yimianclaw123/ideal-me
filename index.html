@@ -1691,33 +1691,20 @@
         </div>
     </section>
 
-    <!-- Visitor Map Section -->
-    <section class="visitor-section" lang="en">
+    <!-- Visitor Map — single section, language labels inside -->
+    <section class="visitor-section">
         <div class="section-header">
-            <h2 class="section-title fade-in">🌍 Visitor Map</h2>
-            <p class="section-subtitle fade-in delay-1">Where my visitors come from</p>
+            <h2 class="section-title fade-in" lang="en">🌍 Visitor Map</h2>
+            <h2 class="section-title fade-in" lang="zh">🌍 访客地图</h2>
+            <p class="section-subtitle fade-in delay-1" lang="en">Where my visitors come from</p>
+            <p class="section-subtitle fade-in delay-1" lang="zh">看看谁来过这里</p>
         </div>
         <div class="map-container fade-in delay-2">
-            <!-- ClustrMaps Globe Widget -->
             <div style="width: 100%; height: 350px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-light); overflow: hidden;">
                 <script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=xn5S3-QUAe5P0zSHOl8eKbvoLNMuy2_YKLh-RGARpTM"></script>
             </div>
-            <p class="visitor-count">👋 <span id="visitor-count">0</span> visitors have stopped by!</p>
-        </div>
-    </section>
-
-    <!-- Visitor Map & Guestbook 中文版 -->
-    <section class="visitor-section" lang="zh">
-        <div class="section-header">
-            <h2 class="section-title fade-in">🌍 访客地图</h2>
-            <p class="section-subtitle fade-in delay-1">看看谁来过这里</p>
-        </div>
-        <div class="map-container fade-in delay-2">
-            <!-- ClustrMaps Globe Widget -->
-            <div style="width: 100%; height: 350px; background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border-light); overflow: hidden;">
-                <script type="text/javascript" id="clstr_globe_zh" src="//clustrmaps.com/globe.js?d=xn5S3-QUAe5P0zSHOl8eKbvoLNMuy2_YKLh-RGARpTM"></script>
-            </div>
-            <p class="visitor-count">👋 已有 <span id="visitor-count-zh">0</span> 位访客！</p>
+            <p class="visitor-count" lang="en">👋 <span id="visitor-count">0</span> visitors have stopped by!</p>
+            <p class="visitor-count" lang="zh">👋 已有 <span id="visitor-count-zh">0</span> 位访客！</p>
         </div>
     </section>
 
