@@ -1839,6 +1839,16 @@
         const SUPABASE_URL = 'https://blsqscyueaboepsxfivy.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsc3FzY3l1ZWFib2Vwc3hmaXZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTEwMzEsImV4cCI6MjA4OTE2NzAzMX0.DHkQEWyMXt6UGhEDStUpS2VQjK6O5Ap3YugsjjSzays';
         
+        // Generate or get visitor ID (for self-delete functionality)
+        function getVisitorId() {
+            let visitorId = localStorage.getItem('mianmian_visitor_id');
+            if (!visitorId) {
+                visitorId = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('mianmian_visitor_id', visitorId);
+            }
+            return visitorId;
+        }
+        
         // Visitor tracking (placeholder - using Supabase to count visitors)
         function initVisitorTracking() {
             // Just track visitors via API - no map needed for now
@@ -1909,13 +1919,18 @@
             const anonymousBadge = msg.is_anonymous ? 
                 `<span class="anonymous-badge">${lang === 'zh' ? '匿名' : 'Anonymous'}</span>` : '';
             
+            // Check if this message belongs to current visitor
+            const currentVisitorId = localStorage.getItem('mianmian_visitor_id');
+            const canDelete = currentVisitorId && msg.visitor_id === currentVisitorId;
+            const deleteButton = canDelete ? `<button class="delete-btn" onclick="showDeleteModal(${msg.id})">🗑️ Delete</button>` : '';
+            
             return `
                 <div class="guestbook-message" data-id="${msg.id}">
                     <div class="name">${nameDisplay} ${anonymousBadge}</div>
                     <div class="message">${escapeHtml(msg.message)}</div>
                     <div class="time">
                         <span>${new Date(msg.created_at).toLocaleDateString()}</span>
-                        <button class="delete-btn" onclick="showDeleteModal(${msg.id})">🗑️ Delete</button>
+                        ${deleteButton}
                     </div>
                 </div>
             `;
@@ -1955,6 +1970,9 @@
                 return;
             }
             
+            // Get visitor ID for self-delete functionality
+            const visitorId = getVisitorId();
+            
             try {
                 await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
                     method: 'POST',
@@ -1966,7 +1984,8 @@
                     body: JSON.stringify({ 
                         name: isAnonymous ? 'Anonymous' : name, 
                         message: message,
-                        is_anonymous: isAnonymous
+                        is_anonymous: isAnonymous,
+                        visitor_id: visitorId
                     })
                 });
                 
@@ -1995,6 +2014,9 @@
                 return;
             }
             
+            // Get visitor ID for self-delete functionality
+            const visitorId = getVisitorId();
+            
             try {
                 await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
                     method: 'POST',
@@ -2006,7 +2028,8 @@
                     body: JSON.stringify({ 
                         name: isAnonymous ? 'Anonymous' : name, 
                         message: message,
-                        is_anonymous: isAnonymous
+                        is_anonymous: isAnonymous,
+                        visitor_id: visitorId
                     })
                 });
                 
@@ -2066,17 +2089,36 @@
         }
 
         async function confirmDelete() {
-            const password = document.getElementById('delete-password').value;
+            // Check if visitor owns this message
+            const currentVisitorId = localStorage.getItem('mianmian_visitor_id');
             const adminPassword = 'yimianclaw2026';
+            const password = document.getElementById('delete-password').value;
             
-            if (password !== adminPassword) {
-                alert('Incorrect password!');
-                return;
-            }
-            
-            if (!currentDeleteId) return;
-            
+            // First, get the message to check visitor_id
             try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook?id=eq.${currentDeleteId}`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                const messages = await res.json();
+                const msg = messages[0];
+                
+                if (!msg) {
+                    alert('Message not found!');
+                    return;
+                }
+                
+                // Allow delete if: 1) visitor owns it, OR 2) correct admin password
+                const isOwner = currentVisitorId && msg.visitor_id === currentVisitorId;
+                const isAdmin = password === adminPassword;
+                
+                if (!isOwner && !isAdmin) {
+                    alert('You can only delete your own messages!');
+                    return;
+                }
+                
                 await fetch(`${SUPABASE_URL}/rest/v1/guestbook?id=eq.${currentDeleteId}`, {
                     method: 'DELETE',
                     headers: {
