@@ -1746,17 +1746,42 @@
             // Update button states
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if ((lang === 'en' && btn.textContent === 'EN') || (lang === 'zh' && btn.textContent === '中文')) {
+                const text = btn.textContent.trim().toLowerCase();
+                if ((lang === 'en' && text === 'en') || (lang === 'zh' && text.includes('中'))) {
                     btn.classList.add('active');
                 }
             });
             
-            if (lang === 'zh') {
-                document.body.classList.add('zh-mode');
-            } else {
-                document.body.classList.remove('zh-mode');
-            }
+            // Show/hide sections directly
+            document.querySelectorAll('section[lang]').forEach(section => {
+                if (section.getAttribute('lang') === lang) {
+                    section.style.display = '';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+            
+            // Also handle non-section elements with lang attribute
+            document.querySelectorAll('[lang]').forEach(el => {
+                if (el.tagName === 'SECTION') return; // already handled
+                if (el.getAttribute('lang') === lang) {
+                    el.style.display = '';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Save preference
+            localStorage.setItem('preferred-lang', lang);
         }
+        
+        // Load saved language preference on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('preferred-lang');
+            if (savedLang) {
+                setLang(savedLang);
+            }
+        });
 
         // Scroll animations
         const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
