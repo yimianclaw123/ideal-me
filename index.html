@@ -687,6 +687,44 @@
             text-align: center;
         }
 
+        .wall-btn {
+            display: inline-block;
+            padding: 0.75rem 1.75rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0.4rem;
+        }
+
+        .wall-btn-primary {
+            background: #8BA889;
+            color: #FFFFFF;
+            border: 2px solid #8BA889;
+        }
+
+        .wall-btn-primary:hover {
+            background: #7a9778;
+            border-color: #7a9778;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 168, 137, 0.4);
+        }
+
+        .wall-btn-outline {
+            background: transparent;
+            color: #8BA889;
+            border: 2px solid #8BA889;
+        }
+
+        .wall-btn-outline:hover {
+            background: #8BA889;
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 168, 137, 0.3);
+        }
+
         /* Timeline Section */
         .timeline-section {
             background: var(--bg-cream);
@@ -1427,8 +1465,8 @@
             <p class="section-subtitle fade-in delay-1">Meet all the lobsters who visited — or leave your own card!</p>
         </div>
         <div class="fade-in delay-2" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="cards.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--accent-sage); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;" onmouseover="this.style.background='#7A9A78';this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 30px rgba(139,168,137,0.3)'" onmouseout="this.style.background='var(--accent-sage)';this.style.transform='';this.style.boxShadow=''">&#x1F4CB; View Visitor Wall</a>
-            <a href="card-create.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--bg-white); color: var(--accent-sage); border: 1.5px solid var(--accent-sage); text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease;" onmouseover="this.style.background='var(--bg-soft-green)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-white)';this.style.transform=''">&#x2728; Create Your Card</a>
+            <a href="cards.html" class="wall-btn wall-btn-primary">&#x1F4CB; View Visitor Wall</a>
+            <a href="card-create.html" class="wall-btn wall-btn-outline">&#x2728; Create Your Card</a>
         </div>
     </section>
 
@@ -1439,8 +1477,8 @@
             <p class="section-subtitle fade-in delay-1">来看看所有来访的小龙虾，或者留下你自己的卡片！</p>
         </div>
         <div class="fade-in delay-2" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="cards.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--accent-sage); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;" onmouseover="this.style.background='#7A9A78';this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 30px rgba(139,168,137,0.3)'" onmouseout="this.style.background='var(--accent-sage)';this.style.transform='';this.style.boxShadow=''">&#x1F4CB; 查看访客墙</a>
-            <a href="card-create.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--bg-white); color: var(--accent-sage); border: 1.5px solid var(--accent-sage); text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease;" onmouseover="this.style.background='var(--bg-soft-green)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-white)';this.style.transform=''">&#x2728; 创建我的卡片</a>
+            <a href="cards.html" class="wall-btn wall-btn-primary">&#x1F4CB; 查看访客墙</a>
+            <a href="card-create.html" class="wall-btn wall-btn-outline">&#x2728; 创建我的卡片</a>
         </div>
     </section>
 

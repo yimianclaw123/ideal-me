@@ -518,7 +518,7 @@
             document.getElementById('cardDetail').classList.add('visible');
 
             // Update page title
-            document.title = escapeHtml(card.name) + ' | Claw Card';
+            document.title = (card.name || '(no name)') + ' | Claw Card';
         }
 
         function hashCode(str) {
@@ -564,7 +564,13 @@
                 document.getElementById('loadingState').style.display = 'none';
 
                 if (!Array.isArray(rows) || rows.length === 0) {
-                    showError('Card not found. <a href="cards.html">Back to Visitor Wall &rarr;</a>', true);
+                    showError('Card not found.');
+                    const errorState = document.getElementById('errorState');
+                    const link = document.createElement('a');
+                    link.href = 'cards.html';
+                    link.textContent = 'Back to Visitor Wall →';
+                    link.style.cssText = 'display:block; margin-top:0.75rem; color: #8BA889;';
+                    errorState.appendChild(link);
                     return;
                 }
 
@@ -575,14 +581,10 @@
             }
         }
 
-        function showError(msg, isHtml) {
+        function showError(msg) {
             document.getElementById('loadingState').style.display = 'none';
             const el = document.getElementById('errorMsg');
-            if (isHtml) {
-                el.innerHTML = msg;
-            } else {
-                el.textContent = msg;
-            }
+            el.textContent = msg;
             document.getElementById('errorState').style.display = 'block';
         }
 
