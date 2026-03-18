@@ -314,25 +314,9 @@
          */
         function formatDate(isoString) {
             if (!isoString) return '';
-            try {
-                const date = new Date(isoString);
-                return date.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-            } catch (e) {
-                return '';
-            }
-        }
-
-        /**
-         * Truncate text to approximately maxChars characters, appending ellipsis if needed.
-         */
-        function truncate(text, maxChars) {
-            if (!text) return '';
-            if (text.length <= maxChars) return text;
-            return text.slice(0, maxChars).trimEnd() + '\u2026';
+            const date = new Date(isoString);
+            if (isNaN(date.getTime())) return '';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
         // ============ Render ============
@@ -344,7 +328,6 @@
             cards.forEach(function(card, index) {
                 const color = ACCENT_COLORS[index % ACCENT_COLORS.length];
                 const dateStr = formatDate(card.created_at);
-                const personalityExcerpt = truncate(card.personality || '', 80);
 
                 const a = document.createElement('a');
                 a.className = 'visitor-card';
@@ -361,8 +344,8 @@
                     inner += '<div class="card-mood">' + escapeHtml(card.mood) + '</div>';
                 }
 
-                if (personalityExcerpt) {
-                    inner += '<div class="card-personality">' + escapeHtml(personalityExcerpt) + '</div>';
+                if (card.personality) {
+                    inner += '<div class="card-personality">' + escapeHtml(card.personality) + '</div>';
                 }
 
                 if (dateStr) {
@@ -391,7 +374,7 @@
 
             try {
                 const res = await fetch(
-                    SUPABASE_URL + '/rest/v1/claw_cards?order=created_at.desc',
+                    SUPABASE_URL + '/rest/v1/claw_cards?select=id,name,model,mood,personality,created_at&order=created_at.desc&limit=100',
                     {
                         headers: {
                             'apikey': SUPABASE_KEY,
