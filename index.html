@@ -408,6 +408,10 @@
             border-radius: 4px;
             background: rgba(196, 164, 132, 0.1);
             transition: all 0.3s ease;
+            display: inline-block;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .email-reveal:hover {
@@ -919,6 +923,7 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
             line-height: 1.6;
+            min-width: 0;
         }
 
         .profile-panel .social-links {
@@ -1103,6 +1108,34 @@
         .guestbook-messages::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.5);
             border-radius: 999px;
+        }
+
+        @media (max-width: 640px) {
+            .timeline-container {
+                max-height: 66vh;
+                padding-right: 0.2rem;
+            }
+
+            .guestbook-messages {
+                max-height: 66vh;
+                padding-right: 0.2rem;
+            }
+
+            .profile-panel {
+                padding: 1.3rem;
+            }
+
+            .profile-list-item {
+                grid-template-columns: 74px 1fr;
+                gap: 0.55rem;
+                padding: 0.8rem 0.85rem;
+            }
+
+            .email-reveal {
+                font-size: 0.76rem;
+                line-height: 1.45;
+                padding: 2px 6px;
+            }
         }
 
         /* Rotating card accent colors */
