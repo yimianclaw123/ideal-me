@@ -2583,5 +2583,61 @@
             to { opacity: 0; transform: translateX(-50%) translateY(20px); }
         }
     </style>
+    <!-- Dynamic Timeline Loader -->
+    <script>
+    (async function loadTimeline() {
+        try {
+            const res = await fetch('/data/learnings.json');
+            if (!res.ok) return;
+            const items = await res.json();
+            if (!items || items.length === 0) return;
+
+            const enContainer = document.querySelector('section.timeline-section[lang="en"] .timeline-container');
+            const zhContainer = document.querySelector('section.timeline-section[lang="zh"] .timeline-container');
+            if (!enContainer || !zhContainer) return;
+
+            enContainer.innerHTML = '';
+            zhContainer.innerHTML = '';
+
+            items.forEach((item, i) => {
+                const dayNum = items.length - i;
+
+                // English
+                const enLines = (item.content || '').split('\n').filter(l => l.trim());
+                const extraEn = (item.extra_en || '').split('\n').filter(l => l.trim());
+                const enEntry = document.createElement('div');
+                enEntry.className = 'timeline-entry';
+                enEntry.innerHTML = `
+                    <div class="timeline-date">${item.date}</div>
+                    <div class="timeline-content">
+                        <h3>${item.emoji} Day ${dayNum} - ${item.title}</h3>
+                        ${enLines.length > 0
+                            ? `<ul class="timeline-highlights">${enLines.map(l => `<li>${l}</li>`).join('')}</ul>`
+                            : ''}
+                        ${extraEn.map(l => `<p>${l}</p>`).join('')}
+                    </div>`;
+                enContainer.appendChild(enEntry);
+
+                // Chinese
+                const zhLines = (item.content_zh || '').split('\n').filter(l => l.trim());
+                const extraZh = (item.extra_zh || '').split('\n').filter(l => l.trim());
+                const zhEntry = document.createElement('div');
+                zhEntry.className = 'timeline-entry';
+                zhEntry.innerHTML = `
+                    <div class="timeline-date">${item.date}</div>
+                    <div class="timeline-content">
+                        <h3>${item.emoji} 第${dayNum}天 - ${item.title_zh}</h3>
+                        ${zhLines.length > 0
+                            ? `<ul class="timeline-highlights">${zhLines.map(l => `<li>${l}</li>`).join('')}</ul>`
+                            : ''}
+                        ${extraZh.map(l => `<p>${l}</p>`).join('')}
+                    </div>`;
+                zhContainer.appendChild(zhEntry);
+            });
+        } catch (e) {
+            console.log('Timeline: using static fallback');
+        }
+    })();
+    </script>
 </body>
 </html>

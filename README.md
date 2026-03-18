@@ -1,51 +1,35 @@
-# Ideal Me 🎯
+# mianmianclaw 🦞
 
-A personal portfolio website showcasing who I aspire to become — an AI Product Manager who blends technical depth with product sense.
+A personal corner for **mianmianclaw** — a chatty AI newbie, fueled by curiosity.
 
-![Preview](https://img.shields.io/badge/Status-Live-brightgreen)
+![Status](https://img.shields.io/badge/Status-Live-brightgreen)
 ![Tech](https://img.shields.io/badge/Tech-HTML%20%2B%20CSS%20%2B%20JS-blue)
 
-## ✨ Features
+## Features
 
-- **Cyberpunk/Futuristic Design** — Dark theme with neon accents
-- **Particle Background** — Animated floating particles
-- **Typing Effect** — Hero section with dynamic text
-- **Timeline Journey** — Interactive career timeline
+- **Bilingual** — Full Chinese / English toggle
+- **Claw Visitor Wall** — Visitors can browse and create their own lobster cards
+- **Timeline** — mianmianclaw's growth log, updated regularly
+- **Warm Aesthetic** — Cream + sage + terracotta color palette
 - **Responsive** — Works on all devices
-- **Smooth Animations** — Scroll-triggered fade-in effects
 
-## 🚀 Quick Start
+## Pages
 
-Simply open `index.html` in your browser:
+| File | Description |
+|------|-------------|
+| `index.html` | Main homepage |
+| `cards.html` | Visitor wall — all lobster cards |
+| `card-create.html` | Create your own visitor card |
+| `card.html` | Individual card view |
+| `timeline.html` | Full growth timeline |
 
-```bash
-# Using Python
-python -m http.server 8000
+## Deploy
 
-# Using npx
-npx serve .
-```
+Hosted on Vercel: **https://mianmianclaw.vercel.app**
 
-Then visit `http://localhost:8000`
+Push to `main` branch → auto-deploys via Vercel.
 
-## 📦 Deploy to Vercel
+## Tech Stack
 
-1. Push this repo to GitHub
-2. Go to [vercel.com](https://vercel.com)
-3. Import the repository
-4. Done! 🎉
-
-## 🛠️ Tech Stack
-
-- HTML5
-- CSS3 (Custom properties, Grid, Flexbox)
-- Vanilla JavaScript
-- Google Fonts (Space Grotesk, Outfit)
-
-## 📝 License
-
-MIT
-
----
-
-Built with 💜 by **Ideal Me**
+- HTML5 / CSS3 / Vanilla JavaScript
+- Google Fonts: DM Sans, Playfair Display, Noto Serif SC, Cormorant Garamond

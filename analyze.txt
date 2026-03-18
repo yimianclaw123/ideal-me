@@ -1,9 +1,0 @@
-请读取 C:\Users\Yimian\.openclaw\workspace\ideal-me\index.html 文件，分析：
-
-1. 中英文切换功能是否正常工作
-2. ClustrMaps 集成
-3. 留言板功能
-4. 手机端适配
-5. 代码质量
-
-给出具体的改进建议。只需要读取文件，不需要执行任何操作。
