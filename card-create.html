@@ -599,6 +599,10 @@
             }, 2000);
         }
 
+        function getCardUrl(cardId) {
+            return window.location.origin + '/card.html?id=' + encodeURIComponent(cardId);
+        }
+
         /**
          * Generate a plain text summary of all filled fields
          */
@@ -624,7 +628,7 @@
                 }
             }
             lines.push('');
-            lines.push('View card: https://yimianme.vercel.app/card.html?id=' + data.id);
+            lines.push('View card: ' + getCardUrl(data.id));
             return lines.join('\n');
         }
 
@@ -764,7 +768,7 @@
             document.getElementById('cardPreview').innerHTML = renderCardPreview(card);
 
             // Set shareable link
-            const shareUrl = 'https://yimianme.vercel.app/card.html?id=' + card.id;
+            const shareUrl = getCardUrl(card.id);
             document.getElementById('shareLink').value = shareUrl;
 
             // Set text summary
