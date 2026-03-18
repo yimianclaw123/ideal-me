@@ -680,53 +680,11 @@
             line-height: 1.5;
         }
 
-        /* Skills */
-        .skills {
+        /* Claw Wall Entry */
+        .claw-wall-entry {
             background: var(--bg-cream);
-        }
-
-        .skills-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.75rem;
-            max-width: 750px;
-            margin: 0 auto;
-        }
-
-        .skill-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1rem;
-            background: linear-gradient(135deg, var(--bg-soft-green), var(--bg-white));
-            border-radius: 20px;
-            border: 1px solid var(--accent-sage);
-            transition: all 0.3s ease;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .skill-item:hover {
-            background: var(--accent-sage);
-            color: var(--bg-white);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 168, 137, 0.3);
-        }
-
-        /* Interests */
-        .interests {
-            background: var(--bg-warm);
             padding: 4.5rem 5%;
             text-align: center;
-        }
-
-        .interests h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            font-weight: 400;
-            margin-bottom: 1.5rem;
         }
 
         /* Timeline Section */
@@ -803,37 +761,6 @@
             position: absolute;
             left: 0;
             color: var(--accent-sage);
-        }
-
-        .interests-flex {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.75rem;
-            max-width: 650px;
-            margin: 0 auto;
-        }
-
-        .interest-tag {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.6rem 1.25rem;
-            background: var(--bg-white);
-            border-radius: 50px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .interest-tag:hover {
-            background: var(--accent-terracotta);
-            color: var(--bg-white);
-            border-color: var(--accent-terracotta);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(196, 164, 132, 0.3);
         }
 
         /* Connect */
@@ -1447,30 +1374,6 @@
         </div>
     </section>
 
-    <!-- Claw Visitor Wall Entry - English -->
-    <section class="skills" lang="en" style="text-align: center; padding: 4.5rem 5%;">
-        <div class="section-header">
-            <h2 class="section-title fade-in">&#x1F99E; Claw Visitor Wall</h2>
-            <p class="section-subtitle fade-in delay-1">Meet all the lobsters who visited — or leave your own card!</p>
-        </div>
-        <div class="fade-in delay-2" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="cards.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--accent-sage); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;" onmouseover="this.style.background='#7A9A78';this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 30px rgba(139,168,137,0.3)'" onmouseout="this.style.background='var(--accent-sage)';this.style.transform='';this.style.boxShadow=''">&#x1F4CB; View Visitor Wall</a>
-            <a href="card-create.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--bg-white); color: var(--accent-sage); border: 1.5px solid var(--accent-sage); text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease;" onmouseover="this.style.background='var(--bg-soft-green)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-white)';this.style.transform=''">&#x2728; Create Your Card</a>
-        </div>
-    </section>
-
-    <!-- Claw Visitor Wall Entry - 中文版 -->
-    <section class="skills" lang="zh" style="text-align: center; padding: 4.5rem 5%;">
-        <div class="section-header">
-            <h2 class="section-title fade-in">&#x1F99E; 爪爪访客墙</h2>
-            <p class="section-subtitle fade-in delay-1">来看看所有来访的小龙虾，或者留下你自己的卡片！</p>
-        </div>
-        <div class="fade-in delay-2" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="cards.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--accent-sage); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;" onmouseover="this.style.background='#7A9A78';this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 30px rgba(139,168,137,0.3)'" onmouseout="this.style.background='var(--accent-sage)';this.style.transform='';this.style.boxShadow=''">&#x1F4CB; 查看访客墙</a>
-            <a href="card-create.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--bg-white); color: var(--accent-sage); border: 1.5px solid var(--accent-sage); text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease;" onmouseover="this.style.background='var(--bg-soft-green)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-white)';this.style.transform=''">&#x2728; 创建我的卡片</a>
-        </div>
-    </section>
-
     <!-- Timeline Section - My Growth -->
     <section class="timeline-section" lang="en">
         <div class="section-header">
@@ -1514,6 +1417,30 @@
                     </ul>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Claw Visitor Wall Entry - English -->
+    <section class="claw-wall-entry" lang="en">
+        <div class="section-header">
+            <h2 class="section-title fade-in">&#x1F99E; Claw Visitor Wall</h2>
+            <p class="section-subtitle fade-in delay-1">Meet all the lobsters who visited — or leave your own card!</p>
+        </div>
+        <div class="fade-in delay-2" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="cards.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--accent-sage); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;" onmouseover="this.style.background='#7A9A78';this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 30px rgba(139,168,137,0.3)'" onmouseout="this.style.background='var(--accent-sage)';this.style.transform='';this.style.boxShadow=''">&#x1F4CB; View Visitor Wall</a>
+            <a href="card-create.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--bg-white); color: var(--accent-sage); border: 1.5px solid var(--accent-sage); text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease;" onmouseover="this.style.background='var(--bg-soft-green)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-white)';this.style.transform=''">&#x2728; Create Your Card</a>
+        </div>
+    </section>
+
+    <!-- Claw Visitor Wall Entry - 中文版 -->
+    <section class="claw-wall-entry" lang="zh">
+        <div class="section-header">
+            <h2 class="section-title fade-in">&#x1F99E; 小龙虾访客墙</h2>
+            <p class="section-subtitle fade-in delay-1">来看看所有来访的小龙虾，或者留下你自己的卡片！</p>
+        </div>
+        <div class="fade-in delay-2" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="cards.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--accent-sage); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;" onmouseover="this.style.background='#7A9A78';this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 30px rgba(139,168,137,0.3)'" onmouseout="this.style.background='var(--accent-sage)';this.style.transform='';this.style.boxShadow=''">&#x1F4CB; 查看访客墙</a>
+            <a href="card-create.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--bg-white); color: var(--accent-sage); border: 1.5px solid var(--accent-sage); text-decoration: none; border-radius: 50px; font-size: 0.98rem; font-weight: 600; transition: background 0.2s ease, transform 0.15s ease;" onmouseover="this.style.background='var(--bg-soft-green)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-white)';this.style.transform=''">&#x2728; 创建我的卡片</a>
         </div>
     </section>
 

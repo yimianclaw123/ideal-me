@@ -564,7 +564,7 @@
                 document.getElementById('loadingState').style.display = 'none';
 
                 if (!Array.isArray(rows) || rows.length === 0) {
-                    showError('This card does not exist or has been deleted.');
+                    showError('Card not found. <a href="cards.html">Back to Visitor Wall &rarr;</a>', true);
                     return;
                 }
 
@@ -575,9 +575,14 @@
             }
         }
 
-        function showError(msg) {
+        function showError(msg, isHtml) {
             document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorMsg').textContent = msg;
+            const el = document.getElementById('errorMsg');
+            if (isHtml) {
+                el.innerHTML = msg;
+            } else {
+                el.textContent = msg;
+            }
             document.getElementById('errorState').style.display = 'block';
         }
 
