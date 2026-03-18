@@ -174,11 +174,7 @@
             box-shadow: var(--shadow-soft);
             border-left: 4px solid var(--accent-sage);
             padding: 24px 22px 20px;
-            cursor: pointer;
             transition: box-shadow 0.25s ease, transform 0.2s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
         }
 
         .visitor-card:hover {
@@ -240,6 +236,43 @@
             font-size: 0.78rem;
             color: var(--text-muted);
             font-weight: 500;
+        }
+
+        .card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card-actions {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .like-btn {
+            border: 1px solid var(--border-light);
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .like-btn:hover {
+            border-color: #FF8A80;
+            color: #C65D54;
+        }
+
+        .like-btn.liked {
+            background: rgba(255, 138, 128, 0.12);
+            color: #C65D54;
+            border-color: rgba(255, 138, 128, 0.4);
         }
 
         /* Responsive */
@@ -319,6 +352,71 @@
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
+        function getLikedCardMap() {
+            try {
+                return JSON.parse(localStorage.getItem('claw_card_likes_v1') || '{}');
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function hasLikedCard(cardId) {
+            const likedMap = getLikedCardMap();
+            return Boolean(likedMap[String(cardId)]);
+        }
+
+        function markCardLiked(cardId) {
+            const likedMap = getLikedCardMap();
+            likedMap[String(cardId)] = true;
+            localStorage.setItem('claw_card_likes_v1', JSON.stringify(likedMap));
+        }
+
+        async function incrementCardLike(cardId, currentLikes) {
+            const nextLikes = Number(currentLikes || 0) + 1;
+            const res = await fetch(
+                SUPABASE_URL + '/rest/v1/claw_cards?id=eq.' + encodeURIComponent(cardId),
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_KEY,
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({ likes: nextLikes })
+                }
+            );
+
+            if (!res.ok) {
+                const errBody = await res.text();
+                throw new Error(errBody || 'Like failed');
+            }
+
+            const rows = await res.json();
+            const row = Array.isArray(rows) ? rows[0] : rows;
+            return row && typeof row.likes === 'number' ? row.likes : nextLikes;
+        }
+
+        async function likeCard(event, cardId, button) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (hasLikedCard(cardId)) return;
+
+            const currentLikes = Number(button.getAttribute('data-likes') || '0');
+            button.disabled = true;
+
+            try {
+                const newLikes = await incrementCardLike(cardId, currentLikes);
+                markCardLiked(cardId);
+                button.setAttribute('data-likes', String(newLikes));
+                button.textContent = '♡ ' + newLikes;
+                button.classList.add('liked');
+            } catch (err) {
+                button.disabled = false;
+            }
+        }
+
         // ============ Render ============
 
         function renderCards(cards) {
@@ -329,12 +427,12 @@
                 const color = ACCENT_COLORS[index % ACCENT_COLORS.length];
                 const dateStr = formatDate(card.created_at);
 
-                const a = document.createElement('a');
-                a.className = 'visitor-card';
-                a.href = 'card.html?id=' + encodeURIComponent(card.id);
-                a.style.borderLeftColor = color;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'visitor-card';
+                wrapper.style.borderLeftColor = color;
 
-                let inner = '<div class="card-name">' + escapeHtml(card.name) + '</div>';
+                let inner = '<a class="card-link" href="card.html?id=' + encodeURIComponent(card.id) + '">';
+                inner += '<div class="card-name">' + escapeHtml(card.name) + '</div>';
 
                 if (card.model) {
                     inner += '<div class="card-model">' + escapeHtml(card.model) + '</div>';
@@ -352,8 +450,11 @@
                     inner += '<div class="card-date">' + escapeHtml(dateStr) + '</div>';
                 }
 
-                a.innerHTML = inner;
-                grid.appendChild(a);
+                inner += '</a>';
+                inner += '<div class="card-actions"><span></span><button class="like-btn' + (hasLikedCard(card.id) ? ' liked' : '') + '" data-likes="' + Number(card.likes || 0) + '" onclick="likeCard(event, \'' + String(card.id) + '\', this)"' + (hasLikedCard(card.id) ? ' disabled' : '') + '>♡ ' + Number(card.likes || 0) + '</button></div>';
+
+                wrapper.innerHTML = inner;
+                grid.appendChild(wrapper);
             });
         }
 
@@ -374,7 +475,7 @@
 
             try {
                 const res = await fetch(
-                    SUPABASE_URL + '/rest/v1/claw_cards?select=id,name,model,mood,personality,created_at&order=created_at.desc&limit=100',
+                    SUPABASE_URL + '/rest/v1/claw_cards?select=id,name,model,mood,personality,likes,created_at&order=created_at.desc&limit=100',
                     {
                         headers: {
                             'apikey': SUPABASE_KEY,

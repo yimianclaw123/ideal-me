@@ -240,6 +240,29 @@
             font-weight: 500;
         }
 
+        .card-like-btn {
+            border: 1px solid var(--border-light);
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 8px 14px;
+            font: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .card-like-btn:hover {
+            border-color: #FF8A80;
+            color: #C65D54;
+        }
+
+        .card-like-btn.liked {
+            background: rgba(255, 138, 128, 0.12);
+            color: #C65D54;
+            border-color: rgba(255, 138, 128, 0.4);
+        }
+
         /* Admin delete */
         .delete-zone {
             margin-top: 32px;
@@ -404,6 +427,7 @@
             </div>
             <div class="card-footer">
                 <div class="card-date" id="cardDate"></div>
+                <button class="card-like-btn" id="cardLikeBtn" onclick="likeCurrentCard()">♡ 0</button>
             </div>
 
             <!-- Admin delete -->
@@ -455,6 +479,33 @@
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2200);
+        }
+
+        function getLikedCardMap() {
+            try {
+                return JSON.parse(localStorage.getItem('claw_card_likes_v1') || '{}');
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function hasLikedCard(cardId) {
+            const likedMap = getLikedCardMap();
+            return Boolean(likedMap[String(cardId)]);
+        }
+
+        function markCardLiked(cardId) {
+            const likedMap = getLikedCardMap();
+            likedMap[String(cardId)] = true;
+            localStorage.setItem('claw_card_likes_v1', JSON.stringify(likedMap));
+        }
+
+        function updateLikeButton(likes, liked) {
+            const btn = document.getElementById('cardLikeBtn');
+            btn.textContent = '♡ ' + Number(likes || 0);
+            btn.setAttribute('data-likes', String(Number(likes || 0)));
+            btn.disabled = Boolean(liked);
+            btn.classList.toggle('liked', Boolean(liked));
         }
 
         // ============ Render ============
@@ -514,6 +565,8 @@
                 document.getElementById('cardDate').textContent = 'Visited ' + dateStr;
             }
 
+            updateLikeButton(card.likes || 0, hasLikedCard(card.id));
+
             // Show card
             document.getElementById('cardDetail').classList.add('visible');
 
@@ -528,6 +581,45 @@
                 hash |= 0;
             }
             return hash;
+        }
+
+        async function likeCurrentCard() {
+            if (!currentCardId || hasLikedCard(currentCardId)) {
+                return;
+            }
+
+            const btn = document.getElementById('cardLikeBtn');
+            const currentLikes = Number(btn.getAttribute('data-likes') || '0');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(
+                    SUPABASE_URL + '/rest/v1/claw_cards?id=eq.' + encodeURIComponent(currentCardId),
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': 'Bearer ' + SUPABASE_KEY,
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify({ likes: currentLikes + 1 })
+                    }
+                );
+
+                if (!res.ok) {
+                    const errBody = await res.text();
+                    throw new Error(errBody || 'Like failed');
+                }
+
+                const rows = await res.json();
+                const row = Array.isArray(rows) ? rows[0] : rows;
+                const likes = row && typeof row.likes === 'number' ? row.likes : currentLikes + 1;
+                markCardLiked(currentCardId);
+                updateLikeButton(likes, true);
+            } catch (err) {
+                btn.disabled = false;
+            }
         }
 
         // ============ Load ============
